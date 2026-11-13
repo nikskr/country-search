@@ -11,10 +11,11 @@
     "test": "vitest run --passWithNoTests"
   },
   "lint-staged": {
-    "**/*.{js,ts,jsx,tsx,json,css,md}": [
+    "*.ts": [
       "eslint --fix",
       "prettier --write"
-    ]
+    ],
+    "*.{json,md,html,css}": "prettier --write"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
