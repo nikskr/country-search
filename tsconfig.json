@@ -20,7 +20,8 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
 
-    "noEmit": true // Checks everything, writes no files
+    "noEmit": true, // Checks everything, writes no files
+    "resolveJsonModule": true
   },
   "include": ["src", "tests"]
 }
