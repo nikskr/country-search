@@ -1,9 +1,16 @@
+import { HttpError } from './errors/errors.js';
+
 export type ErrorKind = 'aborted' | 'timeout' | 'http' | 'other';
 
-export function classifyError(_error: unknown): ErrorKind {
-  throw new Error('Not implemented');
+export function classifyError(error: unknown): ErrorKind {
+  if (error instanceof HttpError) return 'http';
+  if (error instanceof Error) {
+    if (error.name === 'AbortError') return 'aborted';
+    if (error.name === 'TimeoutError') return 'timeout';
+  }
+  return 'other';
 }
 
-export function shouldShowError(_kind: ErrorKind): boolean {
-  throw new Error('Not implemented');
+export function shouldShowError(kind: ErrorKind): boolean {
+  return kind !== 'aborted';
 }
