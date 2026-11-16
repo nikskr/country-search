@@ -1,11 +1,13 @@
 import { debounce } from './core/debounce.js';
 import { createSearchController, type SearchState } from './core/search-controller.js';
 import { el } from './ui/dom.js';
+import { renderResults } from './ui/render.js';
 
 const SEARCH_DELAY_MS = 300;
 
 const input = el('input', { type: 'search', id: 'search', placeholder: 'e.g. Germany', autocomplete: 'off' });
 const status = el('p', { className: 'status', ariaLive: 'polite' });
+const results = el('ul', { className: 'results' });
 
 document.body.append(
   el(
@@ -15,6 +17,7 @@ document.body.append(
     el('label', { htmlFor: 'search', textContent: 'Country name' }),
     input,
     status,
+    results,
   ),
 );
 
@@ -29,12 +32,13 @@ function statusText(state: SearchState): string {
     case 'error':
       return `Error: ${state.kind}`;
     case 'success':
-      return `Found: ${state.countries.map((c) => c.name).join(', ')}`;
+      return `${state.countries.length} found`;
   }
 }
 
 function render(state: SearchState): void {
   status.textContent = statusText(state);
+  results.replaceChildren(...renderResults(state));
 }
 
 const controller = createSearchController(render);

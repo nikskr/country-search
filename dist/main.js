@@ -1,10 +1,12 @@
 import { debounce } from './core/debounce.js';
 import { createSearchController } from './core/search-controller.js';
 import { el } from './ui/dom.js';
+import { renderResults } from './ui/render.js';
 const SEARCH_DELAY_MS = 300;
 const input = el('input', { type: 'search', id: 'search', placeholder: 'e.g. Germany', autocomplete: 'off' });
 const status = el('p', { className: 'status', ariaLive: 'polite' });
-document.body.append(el('main', {}, el('h1', { textContent: 'Country Search' }), el('label', { htmlFor: 'search', textContent: 'Country name' }), input, status));
+const results = el('ul', { className: 'results' });
+document.body.append(el('main', {}, el('h1', { textContent: 'Country Search' }), el('label', { htmlFor: 'search', textContent: 'Country name' }), input, status, results));
 function statusText(state) {
     switch (state.status) {
         case 'idle':
@@ -16,11 +18,12 @@ function statusText(state) {
         case 'error':
             return `Error: ${state.kind}`;
         case 'success':
-            return `Found: ${state.countries.map((c) => c.name).join(', ')}`;
+            return `${state.countries.length} found`;
     }
 }
 function render(state) {
     status.textContent = statusText(state);
+    results.replaceChildren(...renderResults(state));
 }
 const controller = createSearchController(render);
 const debouncedSearch = debounce(() => {
