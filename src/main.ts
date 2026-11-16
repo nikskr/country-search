@@ -1,7 +1,7 @@
 import { debounce } from './core/debounce.js';
 import { createSearchController, type SearchState } from './core/search-controller.js';
 import { el } from './ui/dom.js';
-import { renderResults } from './ui/render.js';
+import { renderResults, renderStatus } from './ui/render.js';
 
 const SEARCH_DELAY_MS = 300;
 
@@ -21,23 +21,8 @@ document.body.append(
   ),
 );
 
-function statusText(state: SearchState): string {
-  switch (state.status) {
-    case 'idle':
-      return 'Start typing a country name.';
-    case 'loading':
-      return `Searching for “${state.query}”…`;
-    case 'empty':
-      return `No countries match “${state.query}”.`;
-    case 'error':
-      return `Error: ${state.kind}`;
-    case 'success':
-      return `${state.countries.length} found`;
-  }
-}
-
 function render(state: SearchState): void {
-  status.textContent = statusText(state);
+  status.replaceChildren(...renderStatus(state, () => void controller.retry()));
   results.replaceChildren(...renderResults(state));
 }
 

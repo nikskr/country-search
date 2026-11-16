@@ -1,28 +1,14 @@
 import { debounce } from './core/debounce.js';
 import { createSearchController } from './core/search-controller.js';
 import { el } from './ui/dom.js';
-import { renderResults } from './ui/render.js';
+import { renderResults, renderStatus } from './ui/render.js';
 const SEARCH_DELAY_MS = 300;
 const input = el('input', { type: 'search', id: 'search', placeholder: 'e.g. Germany', autocomplete: 'off' });
 const status = el('p', { className: 'status', ariaLive: 'polite' });
 const results = el('ul', { className: 'results' });
 document.body.append(el('main', {}, el('h1', { textContent: 'Country Search' }), el('label', { htmlFor: 'search', textContent: 'Country name' }), input, status, results));
-function statusText(state) {
-    switch (state.status) {
-        case 'idle':
-            return 'Start typing a country name.';
-        case 'loading':
-            return `Searching for “${state.query}”…`;
-        case 'empty':
-            return `No countries match “${state.query}”.`;
-        case 'error':
-            return `Error: ${state.kind}`;
-        case 'success':
-            return `${state.countries.length} found`;
-    }
-}
 function render(state) {
-    status.textContent = statusText(state);
+    status.replaceChildren(...renderStatus(state, () => void controller.retry()));
     results.replaceChildren(...renderResults(state));
 }
 const controller = createSearchController(render);
