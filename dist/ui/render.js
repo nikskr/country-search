@@ -20,13 +20,16 @@ function renderFlag(country) {
         loading: 'lazy',
     });
 }
-export function renderCard(country) {
-    return el('li', { className: 'card' }, renderFlag(country), el('h2', { className: 'card__name', textContent: country.name }), el('dl', { className: 'card__facts' }, ...fact('Capital', country.capital ?? '—'), ...fact('Region', country.region), ...fact('Population', numberFormat.format(country.population))));
+export function renderCard(country, onOpen) {
+    const nameButton = el('button', { type: 'button', className: 'card__name', textContent: country.name });
+    const card = el('li', { className: 'card' }, renderFlag(country), el('h2', {}, nameButton), el('dl', { className: 'card__facts' }, ...fact('Capital', country.capital ?? '—'), ...fact('Region', country.region), ...fact('Population', numberFormat.format(country.population))));
+    card.addEventListener('click', () => onOpen(country));
+    return card;
 }
-export function renderResults(state) {
+export function renderResults(state, onOpen) {
     if (state.status !== 'success')
         return [];
-    return state.countries.map(renderCard);
+    return state.countries.map((country) => renderCard(country, onOpen));
 }
 export function renderStatus(state, onRetry) {
     switch (state.status) {
@@ -47,5 +50,13 @@ export function renderStatus(state, onRetry) {
             ];
         }
     }
+}
+export function renderDetails(country) {
+    const list = (items) => (items.length > 0 ? items.join(', ') : '—');
+    return [
+        el('h2', { className: 'details__title' }, renderFlag(country), ` ${country.name}`),
+        el('p', { className: 'details__description', textContent: country.description }),
+        el('dl', { className: 'details__facts' }, ...fact('Capital', country.capital ?? '—'), ...fact('Region', country.subregion ? `${country.region}, ${country.subregion}` : country.region), ...fact('Population', numberFormat.format(country.population)), ...fact('Area', country.area === null ? '—' : `${numberFormat.format(country.area)} km²`), ...fact('Languages', list(country.languages)), ...fact('Currencies', list(country.currencies)), ...fact('Borders', list(country.borders))),
+    ];
 }
 //# sourceMappingURL=render.js.map

@@ -1,6 +1,6 @@
 import type { ErrorKind } from '../core/classify-error.js';
 import type { SearchState } from '../core/search-controller.js';
-import type { CountryCard } from '../core/types/types.js';
+import type { CountryCard, CountryDetails } from '../core/types/types.js';
 import { el } from './dom.js';
 
 const ERROR_MESSAGES: Record<ErrorKind, string> = {
@@ -28,12 +28,14 @@ function renderFlag(country: CountryCard): Node {
   });
 }
 
-export function renderCard(country: CountryCard): HTMLLIElement {
-  return el(
+export function renderCard(country: CountryDetails, onOpen: (country: CountryDetails) => void): HTMLLIElement {
+  const nameButton = el('button', { type: 'button', className: 'card__name', textContent: country.name });
+
+  const card = el(
     'li',
     { className: 'card' },
     renderFlag(country),
-    el('h2', { className: 'card__name', textContent: country.name }),
+    el('h2', {}, nameButton),
     el(
       'dl',
       { className: 'card__facts' },
@@ -42,11 +44,14 @@ export function renderCard(country: CountryCard): HTMLLIElement {
       ...fact('Population', numberFormat.format(country.population)),
     ),
   );
+
+  card.addEventListener('click', () => onOpen(country));
+  return card;
 }
 
-export function renderResults(state: SearchState): Node[] {
+export function renderResults(state: SearchState, onOpen: (country: CountryDetails) => void): Node[] {
   if (state.status !== 'success') return [];
-  return state.countries.map(renderCard);
+  return state.countries.map((country) => renderCard(country, onOpen));
 }
 
 export function renderStatus(state: SearchState, onRetry: () => void): Node[] {
@@ -68,4 +73,24 @@ export function renderStatus(state: SearchState, onRetry: () => void): Node[] {
       ];
     }
   }
+}
+
+export function renderDetails(country: CountryDetails): Node[] {
+  const list = (items: string[]): string => (items.length > 0 ? items.join(', ') : '—');
+
+  return [
+    el('h2', { className: 'details__title' }, renderFlag(country), ` ${country.name}`),
+    el('p', { className: 'details__description', textContent: country.description }),
+    el(
+      'dl',
+      { className: 'details__facts' },
+      ...fact('Capital', country.capital ?? '—'),
+      ...fact('Region', country.subregion ? `${country.region}, ${country.subregion}` : country.region),
+      ...fact('Population', numberFormat.format(country.population)),
+      ...fact('Area', country.area === null ? '—' : `${numberFormat.format(country.area)} km²`),
+      ...fact('Languages', list(country.languages)),
+      ...fact('Currencies', list(country.currencies)),
+      ...fact('Borders', list(country.borders)),
+    ),
+  ];
 }

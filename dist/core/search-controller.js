@@ -1,6 +1,6 @@
 import { searchCountries } from './api.js';
 import { classifyError, shouldShowError } from './classify-error.js';
-import { mapCountryResponse } from './mapper.js';
+import { mapCountryDetails } from './mapper.js';
 export function createSearchController(onState) {
     let current = null;
     let lastQuery = '';
@@ -22,7 +22,7 @@ export function createSearchController(onState) {
             const raw = await searchCountries(query, controller.signal);
             if (controller.signal.aborted)
                 return;
-            const countries = raw.map(mapCountryResponse);
+            const countries = raw.map(mapCountryDetails);
             onState(countries.length === 0 ? { status: 'empty', query } : { status: 'success', query, countries });
         }
         catch (error) {

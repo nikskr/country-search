@@ -1,15 +1,24 @@
 import { debounce } from './core/debounce.js';
 import { createSearchController } from './core/search-controller.js';
 import { el } from './ui/dom.js';
-import { renderResults, renderStatus } from './ui/render.js';
+import { renderDetails, renderResults, renderStatus } from './ui/render.js';
 const SEARCH_DELAY_MS = 300;
 const input = el('input', { type: 'search', id: 'search', placeholder: 'e.g. Germany', autocomplete: 'off' });
 const status = el('p', { className: 'status', ariaLive: 'polite' });
 const results = el('ul', { className: 'results' });
-document.body.append(el('main', {}, el('h1', { textContent: 'Country Search' }), el('label', { htmlFor: 'search', textContent: 'Country name' }), input, status, results));
+const dialog = el('dialog', { className: 'details' });
+const dialogContent = el('div');
+const closeButton = el('button', { type: 'button', className: 'details__close', textContent: 'Close' });
+closeButton.addEventListener('click', () => dialog.close());
+dialog.append(dialogContent, closeButton);
+document.body.append(el('main', {}, el('h1', { textContent: 'Country Search' }), el('label', { htmlFor: 'search', textContent: 'Country name' }), input, status, results, dialog));
+function openDetails(country) {
+    dialogContent.replaceChildren(...renderDetails(country));
+    dialog.showModal();
+}
 function render(state) {
     status.replaceChildren(...renderStatus(state, () => void controller.retry()));
-    results.replaceChildren(...renderResults(state));
+    results.replaceChildren(...renderResults(state, openDetails));
 }
 const controller = createSearchController(render);
 const debouncedSearch = debounce(() => {
