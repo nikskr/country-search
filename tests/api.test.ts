@@ -1,19 +1,7 @@
 import { afterEach, beforeEach, describe, vi, it, expect } from 'vitest';
 import { REQUEST_TIMEOUT_MS, searchCountries } from '../src/core/api.js';
 import { HttpError } from '../src/core/errors/errors.js';
-
-function jsonResponse(body: unknown, status = 200): Response {
-  return new Response(JSON.stringify(body), { status });
-}
-
-function hangingFetch() {
-  return vi.fn(
-    (_url: string, init?: RequestInit) =>
-      new Promise<Response>((_resolve, reject) => {
-        init?.signal?.addEventListener('abort', () => reject(init.signal?.reason));
-      }),
-  );
-}
+import { hangingFetch, jsonResponse } from './helpers/fetch.js';
 
 describe('searchCountries', () => {
   beforeEach(() => {
