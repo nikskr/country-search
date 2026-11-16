@@ -32,3 +32,11 @@ export interface CountryCard {
   population: number;
   languages: string[];
 }
+
+export interface CountryDetails extends CountryCard {
+  subregion: string | null;
+  area: number | null;
+  borders: string[];
+  currencies: string[];
+  description: string;
+}

@@ -1,12 +1,12 @@
 import { searchCountries } from './api.js';
 import { classifyError, shouldShowError, type ErrorKind } from './classify-error.js';
-import { mapCountryResponse } from './mapper.js';
-import type { CountryCard } from './types/types.js';
+import { mapCountryDetails } from './mapper.js';
+import type { CountryDetails } from './types/types.js';
 
 export type SearchState =
   | { status: 'idle' }
   | { status: 'loading'; query: string }
-  | { status: 'success'; query: string; countries: CountryCard[] }
+  | { status: 'success'; query: string; countries: CountryDetails[] }
   | { status: 'empty'; query: string }
   | { status: 'error'; query: string; kind: ErrorKind };
 
@@ -43,7 +43,7 @@ export function createSearchController(onState: (state: SearchState) => void): S
 
       if (controller.signal.aborted) return;
 
-      const countries = raw.map(mapCountryResponse);
+      const countries = raw.map(mapCountryDetails);
 
       onState(countries.length === 0 ? { status: 'empty', query } : { status: 'success', query, countries });
     } catch (error) {

@@ -4,7 +4,7 @@ import type { RawCountry } from '../src/core/types/types.js';
 import countries from './fixtures/countries-ger.json' with { type: 'json' };
 import { controllableFetch } from './helpers/fetch.js';
 import { createSearchController, type SearchState } from '../src/core/search-controller.js';
-import { mapCountryResponse } from '../src/core/mapper.js';
+import { mapCountryDetails } from '../src/core/mapper.js';
 
 const germany = (countries as RawCountry[]).find((c) => c.alpha3Code === 'DEU')!;
 const staleCountry: RawCountry = { ...germany, name: 'Stale result' };
@@ -35,7 +35,7 @@ describe('search controller: race condition', () => {
     expect(states.at(-1)).toEqual({
       status: 'success',
       query: 'ger',
-      countries: [mapCountryResponse(germany)],
+      countries: [mapCountryDetails(germany)],
     });
 
     expect(states.some((s) => s.status === 'success' && s.query === 'ge')).toBe(false);
