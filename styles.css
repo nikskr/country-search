@@ -95,3 +95,63 @@ body {
   margin: 0;
   text-align: right;
 }
+
+.details {
+  margin: auto;
+  width: 90%;
+  max-width: 480px;
+  padding: 24px;
+  border: none;
+  border-radius: 12px;
+}
+
+.details::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.details__title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+
+.details__title .card__flag {
+  width: 48px;
+  height: 32px;
+  border-radius: 4px;
+}
+
+.details__description {
+  margin: 0 0 16px;
+  color: #666;
+}
+
+.details__facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 16px;
+  margin: 0;
+}
+
+.details__facts dt {
+  color: #666;
+}
+
+.details__facts dd {
+  margin: 0;
+}
+
+.details__close {
+  margin-top: 20px;
+  padding: 8px 16px;
+  font: inherit;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.details__close:hover {
+  background: #f5f5f5;
+}
