@@ -6,9 +6,15 @@ import { renderDetails, renderResults, renderStatus } from './ui/render.js';
 
 const SEARCH_DELAY_MS = 300;
 
-const input = el('input', { type: 'search', id: 'search', placeholder: 'e.g. Germany', autocomplete: 'off' });
-const status = el('p', { className: 'status', ariaLive: 'polite' });
-const results = el('ul', { className: 'results' });
+const input = el('input', {
+  className: 'main__input--search',
+  type: 'search',
+  id: 'search',
+  placeholder: 'e.g. Germany',
+  autocomplete: 'off',
+});
+const status = el('p', { className: 'main__status ', ariaLive: 'polite' });
+const results = el('ul', { className: 'main__results' });
 
 const dialog = el('dialog', { className: 'details' });
 const dialogContent = el('div');
@@ -19,9 +25,9 @@ dialog.append(dialogContent, closeButton);
 document.body.append(
   el(
     'main',
-    {},
-    el('h1', { textContent: 'Country Search' }),
-    el('label', { htmlFor: 'search', textContent: 'Country name' }),
+    { className: 'main' },
+    el('h1', { className: 'main__title', textContent: 'Country Search' }),
+    el('label', { className: 'input__label', htmlFor: 'search', textContent: 'Country name' }),
     input,
     status,
     results,
